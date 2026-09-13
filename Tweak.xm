@@ -1,21 +1,57 @@
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
-static NSString *const SCPreferenceDomain = @"com.trantu2641.systemcorner";
-static CGFloat SCReadRadius(void) {
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferenceDomain];
-    NSNumber *value = [defaults objectForKey:@"CornerRadius"];
-    if (!value) return 1.0;
+static BOOL SCEnabled(void) {
+    NSString *version = UIDevice.currentDevice.systemVersion;
+
+    if (![version hasPrefix:@"16.4"]) {
+        return NO;
+    }
+
+    NSNumber *value = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"SC16Enabled"];
+
+    return value ? value.boolValue : YES;
+}
+
+static CGFloat SCCornerRadius(void) {
+    NSNumber *value = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"SCCornerRadius"];
+
+    if (!value) {
+        return 1.0;
+    }
 
     CGFloat radius = value.doubleValue;
-    if (radius < 0.0) radius = 0.0;
-    if (radius > 100.0) radius = 100.0;
+
+    if (radius < 0.0) {
+        radius = 0.0;
+    }
+
+    if (radius > 100.0) {
+        radius = 100.0;
+    }
+
     return radius;
 }
 
 %hook UIScreen
 
 - (CGFloat)_displayCornerRadius {
-    return SCReadRadius();
+    if (SCEnabled()) {
+        return SCCornerRadius();
+    }
+
+    return %orig;
+}
+
+- (UIEdgeInsets)_sceneSafeAreaInsets {
+    if (SCEnabled()) {
+        return UIEdgeInsetsZero;
+    }
+
+    return %orig;
 }
 
 %end
@@ -23,21 +59,36 @@ static CGFloat SCReadRadius(void) {
 %hook UITraitCollection
 
 - (CGFloat)displayCornerRadius {
-    return SCReadRadius();
+    if (SCEnabled()) {
+        return SCCornerRadius();
+    }
+
+    return %orig;
 }
 
 - (CGFloat)_displayCornerRadius {
-    return SCReadRadius();
+    if (SCEnabled()) {
+        return SCCornerRadius();
+    }
+
+    return %orig;
 }
 
-- (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
-    return %orig(SCReadRadius());
++ (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
+    if (SCEnabled()) {
+        return %orig(SCCornerRadius());
+    }
+
+    return %orig(radius);
 }
 
 %end
 
 %ctor {
     @autoreleasepool {
-        NSLog(@"[SystemCorner] loaded, radius=%g", SCReadRadius());
+        if (SCEnabled()) {
+            NSLog(@"[SystemCorner] Loaded - radius: %.2fpx",
+                  SCCornerRadius());
+        }
     }
 }
