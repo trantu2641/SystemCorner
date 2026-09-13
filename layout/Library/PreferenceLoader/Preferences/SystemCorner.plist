@@ -3,22 +3,26 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>entry</key>
-	<dict>
-		<key>cell</key>
-		<string>PSLinkCell</string>
 
-		<key>bundle</key>
-		<string>SystemCornerPrefs</string>
+    <key>entry</key>
+    <dict>
 
-		<key>detail</key>
-		<string>SCRootListController</string>
+        <key>bundle</key>
+        <string>SystemCornerPrefs</string>
 
-		<key>label</key>
-		<string>SystemCorner</string>
+        <key>cell</key>
+        <string>PSLinkCell</string>
 
-		<key>isController</key>
-		<true/>
-	</dict>
+        <key>detail</key>
+        <string>SCRootListController</string>
+
+        <key>isController</key>
+        <true/>
+
+        <key>label</key>
+        <string>SystemCorner</string>
+
+    </dict>
+
 </dict>
 </plist>
