@@ -1,14 +1,15 @@
-#import <UIKit/UIKit.h>
+#import <Preferences/PSListController.h>
 
-@interface SystemCorner1pxRootListController : UITableViewController
+@interface RootListController : PSListController
 @end
 
-@implementation SystemCorner1pxRootListController
+@implementation RootListController
 
-- (NSArray *)specifiers
-{
-    if (_specifiers == nil)
-        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+- (NSArray *)specifiers {
+    if (!_specifiers) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"root"
+                                                  target:self];
+    }
 
     return _specifiers;
 }
