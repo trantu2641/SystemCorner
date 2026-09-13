@@ -3,7 +3,7 @@
 @implementation RootListController
 
 - (NSArray *)specifiers {
-    if (_specifiers == nil) {
+    if (!_specifiers) {
         _specifiers = [self loadSpecifiersFromPlistName:@"Root"
                                                   target:self];
     }
