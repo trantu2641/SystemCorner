@@ -1,9 +1,6 @@
 #import "RootListController.h"
+#import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
-
-@interface RootListController ()
-
-@end
 
 @implementation RootListController
 
