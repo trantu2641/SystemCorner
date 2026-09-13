@@ -4,7 +4,6 @@
 
 <plist version="1.0">
 <dict>
-
     <key>Bundle</key>
     <string>SystemCornerPrefs.bundle</string>
 
@@ -13,6 +12,5 @@
 
     <key>Path</key>
     <string>/Library/PreferenceBundles/SystemCornerPrefs.bundle</string>
-
 </dict>
 </plist>
