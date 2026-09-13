@@ -3,51 +3,64 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>items</key>
-	<array>
 
-		<dict>
-			<key>label</key>
-			<string>SystemCorner</string>
+    <key>PreferenceSpecifiers</key>
+    <array>
 
-			<key>cell</key>
-			<string>PSGroupCell</string>
+        <dict>
+            <key>Type</key>
+            <string>PSGroupCell</string>
 
-			<key>footerText</key>
-			<string>Nhập độ bo góc màn hình. 0 = vuông, số lớn hơn = bo nhiều hơn.</string>
-		</dict>
+            <key>Label</key>
+            <string>System Corner</string>
 
-		<dict>
-			<key>cell</key>
-			<string>PSEditTextCell</string>
+            <key>FooterText</key>
+            <string>Nhập độ bo góc hệ thống. 0 = vuông, số lớn hơn = bo nhiều hơn.</string>
+        </dict>
 
-			<key>label</key>
-			<string>Corner Radius</string>
 
-			<key>key</key>
-			<string>SystemCornerRadius</string>
+        <dict>
+            <key>Type</key>
+            <string>PSEditTextCell</string>
 
-			<key>default</key>
-			<real>1.0</real>
+            <key>Key</key>
+            <string>SystemCornerRadius</string>
 
-			<key>keyboardType</key>
-			<string>UIKeyboardTypeNumbersAndPunctuation</string>
-		</dict>
+            <key>DefaultValue</key>
+            <real>1.0</real>
 
-		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
+            <key>Label</key>
+            <string>Corner Radius</string>
 
-			<key>label</key>
-			<string>Respring</string>
+            <key>KeyboardType</key>
+            <string>UIKeyboardTypeNumbersAndPunctuation</string>
+        </dict>
 
-			<key>action</key>
-			<string>respring</string>
-		</dict>
 
-	</array>
+        <dict>
+            <key>Type</key>
+            <string>PSGroupCell</string>
 
-	<key>title</key>
-	<string>SystemCorner</string>
+            <key>FooterText</key>
+            <string>Thay đổi sẽ được áp dụng sau khi Respring.</string>
+        </dict>
+
+
+        <dict>
+            <key>Type</key>
+            <string>PSButtonCell</string>
+
+            <key>Label</key>
+            <string>Respring</string>
+
+            <key>Action</key>
+            <string>respring</string>
+        </dict>
+
+    </array>
+
+    <key>Title</key>
+    <string>SystemCorner</string>
+
 </dict>
 </plist>
