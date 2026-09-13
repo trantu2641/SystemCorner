@@ -1,87 +1,30 @@
-#import <UIKit/UIKit.h>
+export THEOS ?= /home/runner/theos
 
-static NSString * const SCPreferencesDomain = @"xyz.cypwn.systemcorner";
+ARCHS = arm64 arm64e
+TARGET = iphone:clang:16.5:16.0
 
-static BOOL SCEnabled(void) {
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferencesDomain];
+include $(THEOS)/makefiles/common.mk
 
-    NSNumber *value = [defaults objectForKey:@"SCEnabled"];
+TWEAK_NAME = SystemCorner
 
-    if (value == nil) {
-        return YES;
-    }
+SystemCorner_FILES = Tweak.xm
+SystemCorner_CFLAGS = -fobjc-arc
+SystemCorner_FRAMEWORKS = UIKit
 
-    return value.boolValue;
-}
-
-static CGFloat SCRadius(void) {
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferencesDomain];
-
-    NSNumber *value = [defaults objectForKey:@"SCRadius"];
-
-    if (value == nil) {
-        return 1.0;
-    }
-
-    CGFloat radius = value.doubleValue;
-
-    if (radius < 0.0) {
-        radius = 0.0;
-    }
-
-    if (radius > 100.0) {
-        radius = 100.0;
-    }
-
-    return radius;
-}
-
-%hook UIScreen
-
-- (CGFloat)_displayCornerRadius {
-    if (SCEnabled()) {
-        return SCRadius();
-    }
-
-    return %orig;
-}
-
-%end
+include $(THEOS_MAKE_PATH)/tweak.mk
 
 
-%hook UITraitCollection
+BUNDLE_NAME = SystemCornerPrefs
 
-- (CGFloat)displayCornerRadius {
-    if (SCEnabled()) {
-        return SCRadius();
-    }
+SystemCornerPrefs_FILES = Resources/RootListController.m
+SystemCornerPrefs_INSTALL_PATH = /Library/PreferenceBundles
+SystemCornerPrefs_FRAMEWORKS = UIKit
+SystemCornerPrefs_PRIVATE_FRAMEWORKS = Preferences
 
-    return %orig;
-}
-
-- (CGFloat)_displayCornerRadius {
-    if (SCEnabled()) {
-        return SCRadius();
-    }
-
-    return %orig;
-}
-
-- (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
-    if (SCEnabled()) {
-        return %orig(SCRadius());
-    }
-
-    return %orig(radius);
-}
-
-%end
+include $(THEOS_MAKE_PATH)/bundle.mk
 
 
-%ctor {
-    @autoreleasepool {
-        if (SCEnabled()) {
-            NSLog(@"[SystemCorner] Loaded - radius: %.2f", SCRadius());
-        }
-    }
-}
+after-all::
+	@mkdir -p $(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences
+	@cp Resources/SystemCornerPrefs.plist \
+		$(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist
