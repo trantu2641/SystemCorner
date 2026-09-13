@@ -1,54 +1,39 @@
 #import <UIKit/UIKit.h>
-#import <CoreFoundation/CoreFoundation.h>
 
-static CGFloat SCRadius(void) {
-    CFPropertyListRef value = CFPreferencesCopyAppValue(
-        CFSTR("SCRadius"),
-        CFSTR("xyz.cypwn.systemcorner")
-    );
-
-    CGFloat radius = 1.0;
-
-    if (value && CFGetTypeID(value) == CFNumberGetTypeID()) {
-        double number = 1.0;
-        CFNumberGetValue(
-            (CFNumberRef)value,
-            kCFNumberDoubleType,
-            &number
-        );
-        radius = number;
-    }
-
-    if (value) {
-        CFRelease(value);
-    }
-
-    if (radius < 0.0)
-        radius = 0.0;
-
-    if (radius > 100.0)
-        radius = 100.0;
-
-    return radius;
-}
+static NSString * const SCPreferencesDomain = @"xyz.cypwn.systemcorner";
 
 static BOOL SCEnabled(void) {
-    CFPropertyListRef value = CFPreferencesCopyAppValue(
-        CFSTR("SCEnabled"),
-        CFSTR("xyz.cypwn.systemcorner")
-    );
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferencesDomain];
 
-    BOOL enabled = YES;
+    NSNumber *value = [defaults objectForKey:@"SCEnabled"];
 
-    if (value && CFGetTypeID(value) == CFBooleanGetTypeID()) {
-        enabled = CFBooleanGetValue((CFBooleanRef)value);
+    if (value == nil) {
+        return YES;
     }
 
-    if (value) {
-        CFRelease(value);
+    return value.boolValue;
+}
+
+static CGFloat SCRadius(void) {
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferencesDomain];
+
+    NSNumber *value = [defaults objectForKey:@"SCRadius"];
+
+    if (value == nil) {
+        return 1.0;
     }
 
-    return enabled;
+    CGFloat radius = value.doubleValue;
+
+    if (radius < 0.0) {
+        radius = 0.0;
+    }
+
+    if (radius > 100.0) {
+        radius = 100.0;
+    }
+
+    return radius;
 }
 
 %hook UIScreen
@@ -62,6 +47,7 @@ static BOOL SCEnabled(void) {
 }
 
 %end
+
 
 %hook UITraitCollection
 
@@ -91,13 +77,11 @@ static BOOL SCEnabled(void) {
 
 %end
 
+
 %ctor {
     @autoreleasepool {
         if (SCEnabled()) {
-            NSLog(
-                @"[SystemCorner] Loaded - radius: %.2f",
-                SCRadius()
-            );
+            NSLog(@"[SystemCorner] Loaded - radius: %.2f", SCRadius());
         }
     }
 }
