@@ -1,33 +1,43 @@
 #import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-#import <objc/runtime.h>
-
-#pragma mark - Configuration
-
-static NSString * const SC16_PREFS =
-    @"com.trantu2641.systemcorner";
-
-static NSString * const SC16_CORNER_KEY =
-    @"CornerRadius";
-
-static CGFloat const SC16_DEFAULT_CORNER =
-    1.0;
+#import <QuartzCore/QuartzCore.h>
 
 #pragma mark - Preferences
 
-static CGFloat SC16CornerRadius(void)
+static NSString * const SC_PREFS_DOMAIN =
+    @"com.trantu2641.systemcorner";
+
+static NSString * const SC_CORNER_RADIUS_KEY =
+    @"CornerRadius";
+
+static CGFloat const SC_DEFAULT_CORNER_RADIUS =
+    1.0;
+
+#pragma mark - Enabled
+
+static BOOL SCEnabled(void)
+{
+    NSString *version =
+        UIDevice.currentDevice.systemVersion;
+
+    return [version hasPrefix:@"16."];
+}
+
+#pragma mark - Read Settings
+
+static CGFloat SCCornerRadius(void)
 {
     NSUserDefaults *defaults =
-        [[NSUserDefaults alloc] initWithSuiteName:SC16_PREFS];
+        [[NSUserDefaults alloc]
+            initWithSuiteName:SC_PREFS_DOMAIN];
 
     if (!defaults)
-        return SC16_DEFAULT_CORNER;
+        return SC_DEFAULT_CORNER_RADIUS;
 
     id value =
-        [defaults objectForKey:SC16_CORNER_KEY];
+        [defaults objectForKey:SC_CORNER_RADIUS_KEY];
 
     if (!value)
-        return SC16_DEFAULT_CORNER;
+        return SC_DEFAULT_CORNER_RADIUS;
 
     CGFloat radius =
         [value doubleValue];
@@ -41,104 +51,40 @@ static CGFloat SC16CornerRadius(void)
     return radius;
 }
 
-#pragma mark - Enable
+#pragma mark - Multitasking Window Detection
 
-static BOOL SC16Enabled(void)
-{
-    NSString *version =
-        UIDevice.currentDevice.systemVersion;
-
-    return [version hasPrefix:@"16."];
-}
-
-#pragma mark - Window Detection
-
-static BOOL SC16IsKeyboardWindow(UIWindow *window)
+static BOOL SCIsMultitaskingWindow(UIWindow *window)
 {
     if (!window)
         return NO;
 
-    NSString *name =
-        NSStringFromClass(window.class);
-
-    if ([name containsString:@"UITextEffectsWindow"])
-        return YES;
-
-    if ([name containsString:@"UIRemoteKeyboardWindow"])
-        return YES;
-
-    if ([name containsString:@"Keyboard"])
-        return YES;
-
-    if ([name containsString:@"KeyboardWindow"])
-        return YES;
-
-    return NO;
-}
-
-static BOOL SC16IsStatusBarWindow(UIWindow *window)
-{
-    if (!window)
-        return NO;
-
-    NSString *name =
-        NSStringFromClass(window.class);
-
-    if ([name containsString:@"StatusBar"])
-        return YES;
-
-    if ([name containsString:@"_UIStatusBar"])
-        return YES;
-
-    return NO;
-}
-
-#pragma mark - Multitasking Detection
-
-/*
- * Chỉ xử lý các window thuộc giao diện đa nhiệm.
- *
- * Không tác động vào UIWindow bình thường
- * của ứng dụng.
- */
-static BOOL SC16IsMultitaskingWindow(UIWindow *window)
-{
-    if (!window)
-        return NO;
-
-    NSString *name =
+    NSString *className =
         NSStringFromClass(window.class);
 
     /*
-     * Các private window/class thường gặp
-     * trong SpringBoard / multitasking.
+     * SpringBoard multitasking / app switcher.
      */
-    if ([name containsString:@"SBFluidSwitcher"])
+
+    if ([className containsString:@"Switcher"])
         return YES;
 
-    if ([name containsString:@"Switcher"])
+    if ([className containsString:@"Recents"])
         return YES;
 
-    if ([name containsString:@"Recents"])
+    if ([className containsString:@"Multitasking"])
         return YES;
 
-    if ([name containsString:@"Multitasking"])
-        return YES;
-
-    if ([name containsString:@"AppSwitcher"])
-        return YES;
-
-    if ([name containsString:@"SwitcherWindow"])
+    if ([className containsString:@"FluidSwitcher"])
         return YES;
 
     return NO;
 }
 
-#pragma mark - Corner Application
+#pragma mark - Apply Corner
 
-static void SC16ApplyCorner(UIWindow *window)
+static void SCApplyCornerToWindow(UIWindow *window)
 {
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
     if (!window)
@@ -151,47 +97,30 @@ static void SC16ApplyCorner(UIWindow *window)
         return;
 
     /*
-     * Không đụng keyboard.
+     * Chỉ xử lý UI đa nhiệm.
      */
-    if (SC16IsKeyboardWindow(window))
-        return;
-
-    /*
-     * Không đụng Status Bar.
-     */
-    if (SC16IsStatusBarWindow(window))
-        return;
-
-    /*
-     * Chỉ bo giao diện đa nhiệm.
-     */
-    if (!SC16IsMultitaskingWindow(window))
+    if (!SCIsMultitaskingWindow(window))
         return;
 
     CGFloat radius =
-        SC16CornerRadius();
-
-    if (radius <= 0.0)
-    {
-        window.layer.cornerRadius = 0.0;
-        window.layer.masksToBounds = NO;
-        return;
-    }
+        SCCornerRadius();
 
     /*
-     * Không thay đổi frame / bounds / transform.
+     * Không thay đổi:
      *
-     * Chỉ bo chính layer của UI đa nhiệm.
+     * frame
+     * bounds
+     * center
+     * transform
+     *
+     * Chỉ thay đổi corner.
      */
     window.layer.cornerRadius =
         radius;
 
     window.layer.masksToBounds =
-        YES;
+        (radius > 0.0);
 
-    /*
-     * iOS 13+.
-     */
     if (@available(iOS 13.0, *))
     {
         window.layer.cornerCurve =
@@ -201,9 +130,9 @@ static void SC16ApplyCorner(UIWindow *window)
 
 #pragma mark - Apply Scene
 
-static void SC16ApplyScene(UIWindowScene *scene)
+static void SCApplyScene(UIWindowScene *scene)
 {
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
     if (!scene)
@@ -218,18 +147,15 @@ static void SC16ApplyScene(UIWindowScene *scene)
 
     for (UIWindow *window in windows)
     {
-        if (!window)
-            continue;
-
-        SC16ApplyCorner(window);
+        SCApplyCornerToWindow(window);
     }
 }
 
 #pragma mark - Apply All Scenes
 
-static void SC16ApplyAllScenes(void)
+static void SCApplyAllScenes(void)
 {
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
     UIApplication *application =
@@ -246,7 +172,7 @@ static void SC16ApplyAllScenes(void)
             continue;
         }
 
-        SC16ApplyScene(
+        SCApplyScene(
             (UIWindowScene *)scene
         );
     }
@@ -254,15 +180,15 @@ static void SC16ApplyAllScenes(void)
 
 #pragma mark - Delayed Apply
 
-static void SC16ScheduleApply(void)
+static void SCScheduleApply(void)
 {
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
     dispatch_async(
         dispatch_get_main_queue(),
         ^{
-            SC16ApplyAllScenes();
+            SCApplyAllScenes();
 
             dispatch_after(
                 dispatch_time(
@@ -274,14 +200,14 @@ static void SC16ScheduleApply(void)
                 ),
                 dispatch_get_main_queue(),
                 ^{
-                    SC16ApplyAllScenes();
+                    SCApplyAllScenes();
                 }
             );
         }
     );
 }
 
-#pragma mark - UIWindow Hooks
+#pragma mark - UIWindow
 
 %hook UIWindow
 
@@ -289,16 +215,15 @@ static void SC16ScheduleApply(void)
 {
     %orig;
 
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
-    UIWindow *window =
-        self;
+    UIWindow *window = self;
 
     dispatch_async(
         dispatch_get_main_queue(),
         ^{
-            SC16ApplyCorner(window);
+            SCApplyCornerToWindow(window);
         }
     );
 }
@@ -307,22 +232,18 @@ static void SC16ScheduleApply(void)
 {
     %orig(hidden);
 
-    if (!SC16Enabled())
+    if (!SCEnabled())
         return;
 
     if (hidden)
         return;
 
-    UIWindow *window =
-        self;
+    UIWindow *window = self;
 
     dispatch_async(
         dispatch_get_main_queue(),
         ^{
-            if (!window.hidden)
-            {
-                SC16ApplyCorner(window);
-            }
+            SCApplyCornerToWindow(window);
         }
     );
 }
@@ -335,9 +256,9 @@ static void SC16ScheduleApply(void)
 {
     @autoreleasepool
     {
-        if (!SC16Enabled())
+        if (!SCEnabled())
             return;
 
-        SC16ScheduleApply();
+        SCScheduleApply();
     }
 }
