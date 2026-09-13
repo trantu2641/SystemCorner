@@ -1,30 +1,77 @@
-export THEOS ?= /home/runner/theos
+#import <UIKit/UIKit.h>
 
-ARCHS = arm64 arm64e
-TARGET = iphone:clang:16.5:16.0
+static CGFloat SCRadius(void) {
+    NSNumber *value = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"SCRadius"];
 
-include $(THEOS)/makefiles/common.mk
+    if (!value) {
+        return 1.0;
+    }
 
-TWEAK_NAME = SystemCorner
+    CGFloat radius = value.doubleValue;
 
-SystemCorner_FILES = Tweak.xm
-SystemCorner_CFLAGS = -fobjc-arc
-SystemCorner_FRAMEWORKS = UIKit
+    if (radius < 0.0) {
+        radius = 0.0;
+    }
 
-include $(THEOS_MAKE_PATH)/tweak.mk
+    if (radius > 100.0) {
+        radius = 100.0;
+    }
 
+    return radius;
+}
 
-BUNDLE_NAME = SystemCornerPrefs
+static BOOL SCEnabled(void) {
+    NSNumber *value = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"SCEnabled"];
 
-SystemCornerPrefs_FILES = Resources/RootListController.m
-SystemCornerPrefs_INSTALL_PATH = /Library/PreferenceBundles
-SystemCornerPrefs_FRAMEWORKS = UIKit
-SystemCornerPrefs_PRIVATE_FRAMEWORKS = Preferences
+    return value ? value.boolValue : YES;
+}
 
-include $(THEOS_MAKE_PATH)/bundle.mk
+%hook UIScreen
 
+- (CGFloat)_displayCornerRadius {
+    if (SCEnabled()) {
+        return SCRadius();
+    }
 
-after-all::
-	@mkdir -p $(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences
-	@cp Resources/SystemCornerPrefs.plist \
-		$(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist
+    return %orig;
+}
+
+%end
+
+%hook UITraitCollection
+
+- (CGFloat)displayCornerRadius {
+    if (SCEnabled()) {
+        return SCRadius();
+    }
+
+    return %orig;
+}
+
+- (CGFloat)_displayCornerRadius {
+    if (SCEnabled()) {
+        return SCRadius();
+    }
+
+    return %orig;
+}
+
+- (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
+    if (SCEnabled()) {
+        return %orig(SCRadius());
+    }
+
+    return %orig(radius);
+}
+
+%end
+
+%ctor {
+    @autoreleasepool {
+        if (SCEnabled()) {
+            NSLog(@"[SystemCorner] Loaded - radius: %.2f", SCRadius());
+        }
+    }
+}
