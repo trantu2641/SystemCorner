@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
 <plist version="1.0">
 <array>
 
@@ -13,30 +14,24 @@
 
     <dict>
         <key>cell</key>
-        <string>PSTextFieldCell</string>
+        <string>PSEditTextCell</string>
         <key>label</key>
         <string>Độ bo góc</string>
         <key>key</key>
-        <string>CornerRadius</string>
+        <string>SCCornerRadius</string>
         <key>default</key>
         <real>1</real>
-        <key>defaults</key>
-        <string>com.trantu2641.systemcorner</string>
-        <key>keyboardType</key>
-        <string>numbersAndPunctuation</string>
         <key>placeholder</key>
-        <string>1</string>
-        <key>footerText</key>
-        <string>Nhập giá trị từ 0 đến 100 px.</string>
+        <string>Nhập số</string>
+        <key>keyboardType</key>
+        <string>UIKeyboardTypeNumbersAndPunctuation</string>
     </dict>
 
     <dict>
         <key>cell</key>
-        <string>PSButtonCell</string>
-        <key>label</key>
-        <string>Áp dụng</string>
-        <key>action</key>
-        <string>applyChanges</string>
+        <string>PSGroupCell</string>
+        <key>footerText</key>
+        <string>Nhập độ bo góc theo px. Giá trị mặc định: 1 px.</string>
     </dict>
 
 </array>
