@@ -1,0 +1,7 @@
+{
+    "entry" = {
+        "bundle" = "SystemCornerPrefs";
+        "cell" = "PSLinkCell";
+        "label" = "SystemCorner";
+    };
+}
