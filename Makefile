@@ -17,6 +17,7 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 BUNDLE_NAME := SystemCornerPrefs
 
 SystemCornerPrefs_FILES := Resources/RootListController.m
+SystemCornerPrefs_CFLAGS := -fobjc-arc
 SystemCornerPrefs_FRAMEWORKS := UIKit
 SystemCornerPrefs_PRIVATE_FRAMEWORKS := Preferences
 SystemCornerPrefs_INSTALL_PATH := /Library/PreferenceBundles
