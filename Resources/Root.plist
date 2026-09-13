@@ -11,6 +11,7 @@
         <dict>
             <key>Type</key>
             <string>PSGroupCell</string>
+
             <key>Label</key>
             <string>SystemCorner</string>
         </dict>
@@ -18,10 +19,13 @@
         <dict>
             <key>Type</key>
             <string>PSSwitchSpecifier</string>
+
             <key>Key</key>
             <string>SCEnabled</string>
+
             <key>DefaultValue</key>
             <true/>
+
             <key>Label</key>
             <string>Enabled</string>
         </dict>
@@ -29,16 +33,24 @@
         <dict>
             <key>Type</key>
             <string>PSNumberSpecifier</string>
+
             <key>Key</key>
             <string>SCRadius</string>
+
             <key>DefaultValue</key>
             <real>1.0</real>
+
             <key>Label</key>
             <string>Corner Radius</string>
+
             <key>MinimumValue</key>
             <real>0.0</real>
+
             <key>MaximumValue</key>
             <real>100.0</real>
+
+            <key>KeyboardType</key>
+            <string>UIKeyboardTypeNumbersAndPunctuation</string>
         </dict>
 
     </array>
