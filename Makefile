@@ -13,6 +13,7 @@ SystemCorner_FRAMEWORKS = UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
+
 BUNDLE_NAME = SystemCornerPrefs
 
 SystemCornerPrefs_FILES = Resources/RootListController.m
@@ -22,7 +23,8 @@ SystemCornerPrefs_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
-after-all::
-	@mkdir -p $(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences
-	@cp Resources/SystemCornerPrefs.plist \
-		$(THEOS_PACKAGE_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist
+
+after-stage::
+	@mkdir -p "$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences"
+	@cp "Resources/SystemCornerPrefs.plist" \
+		"$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist"
