@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-
 <plist version="1.0">
 <dict>
+    <key>title</key>
+    <string>SystemCorner</string>
 
     <key>items</key>
     <array>
@@ -11,52 +12,38 @@
         <dict>
             <key>cell</key>
             <string>PSSwitchCell</string>
-
-            <key>label</key>
-            <string>Enabled</string>
-
-            <key>key</key>
-            <string>SCEnabled</string>
-
             <key>default</key>
             <true/>
+            <key>defaults</key>
+            <string>xyz.cypwn.systemcorner</string>
+            <key>key</key>
+            <string>SCEnabled</string>
+            <key>label</key>
+            <string>Enabled</string>
         </dict>
 
         <dict>
             <key>cell</key>
             <string>PSEditTextCell</string>
-
-            <key>label</key>
-            <string>Corner Radius</string>
-
-            <key>key</key>
-            <string>SCRadius</string>
-
             <key>default</key>
             <string>1</string>
-
-            <key>keyboard</key>
-            <string>NumberPad</string>
-
-            <key>placeholder</key>
-            <string>1 - 100</string>
+            <key>defaults</key>
+            <string>xyz.cypwn.systemcorner</string>
+            <key>key</key>
+            <string>SCRadius</string>
+            <key>label</key>
+            <string>Corner Radius</string>
         </dict>
 
         <dict>
             <key>cell</key>
             <string>PSButtonCell</string>
-
             <key>label</key>
-            <string>Respring</string>
-
+            <string>Apply</string>
             <key>action</key>
-            <string>respring</string>
+            <string>applySettings</string>
         </dict>
 
     </array>
-
-    <key>title</key>
-    <string>SystemCorner</string>
-
 </dict>
 </plist>
