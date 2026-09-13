@@ -4,6 +4,7 @@
 
 <plist version="1.0">
 <dict>
+
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
 
@@ -23,12 +24,13 @@
     <string>BNDL</string>
 
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.0</string>
 
     <key>CFBundleVersion</key>
     <string>1</string>
 
     <key>NSPrincipalClass</key>
     <string>RootListController</string>
+
 </dict>
 </plist>
