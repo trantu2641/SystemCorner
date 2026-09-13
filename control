@@ -1,5 +1,5 @@
 Package: com.tutu.systemcorner1px
-Name: System Corner 1px
+Name: System Corner
 Version: 1.0.0
 Architecture: iphoneos-arm64e
 Description: Set existing system UI corner radii to 1px on iOS 16.
