@@ -1,6 +1,6 @@
 Package: com.tutu.systemcorner
 Name: System Corner
-Version: 1.0.8
+Version: 1.0.9
 Architecture: iphoneos-arm64e
 Description: Tùy chỉnh độ bo góc UI hệ thống trên iOS 16.
 Maintainer: Tú Tú
