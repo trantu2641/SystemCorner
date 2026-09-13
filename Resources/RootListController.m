@@ -18,22 +18,14 @@
         NSNumber *value = [[NSUserDefaults standardUserDefaults]
             objectForKey:@"SCRadius"];
 
-        if (!value) {
-            return @1;
-        }
-
-        return value;
+        return value ?: @1;
     }
 
     if ([key isEqualToString:@"SCEnabled"]) {
         NSNumber *value = [[NSUserDefaults standardUserDefaults]
             objectForKey:@"SCEnabled"];
 
-        if (!value) {
-            return @YES;
-        }
-
-        return value;
+        return value ?: @YES;
     }
 
     return [super readPreferenceValue:specifier];
@@ -41,9 +33,10 @@
 
 - (void)setPreferenceValue:(id)value
                    specifier:(PSSpecifier *)specifier {
+
     NSString *key = [specifier propertyForKey:@"key"];
 
-    if (key.length == 0) {
+    if (!key.length) {
         return;
     }
 
@@ -59,12 +52,6 @@
     CFPreferencesAppSynchronize(
         CFSTR("xyz.cypwn.systemcorner")
     );
-
-    if ([key isEqualToString:@"SCRadius"] ||
-        [key isEqualToString:@"SCEnabled"]) {
-
-        notify_post("xyz.cypwn.systemcorner.settingsChanged");
-    }
 }
 
 @end
