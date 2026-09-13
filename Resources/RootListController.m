@@ -12,12 +12,4 @@
     return _specifiers;
 }
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    [super setPreferenceValue:value specifier:specifier];
-
-    CFPreferencesAppSynchronize(
-        CFSTR("com.trantu2641.systemcorner")
-    );
-}
-
 @end
