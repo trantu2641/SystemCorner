@@ -20,29 +20,27 @@
             <string>PSSwitchCell</string>
             <key>label</key>
             <string>Enabled</string>
+            <key>key</key>
+            <string>SCEnabled</string>
             <key>default</key>
             <true/>
             <key>defaults</key>
             <string>com.trantu2641.systemcorner</string>
-            <key>key</key>
-            <string>SCEnabled</string>
         </dict>
 
         <dict>
             <key>cell</key>
-            <string>PSTextFieldCell</string>
+            <string>PSTextFieldSpecifier</string>
             <key>label</key>
             <string>Corner Radius</string>
-            <key>default</key>
-            <real>1.0</real>
-            <key>defaults</key>
-            <string>com.trantu2641.systemcorner</string>
             <key>key</key>
             <string>SCRadius</string>
+            <key>default</key>
+            <real>1</real>
+            <key>defaults</key>
+            <string>com.trantu2641.systemcorner</string>
             <key>placeholder</key>
             <string>1</string>
-            <key>keyboard</key>
-            <string>numberPad</string>
         </dict>
 
     </array>
