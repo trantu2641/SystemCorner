@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
 <plist version="1.0">
 <dict>
-    <key>PreferenceSpecifiers</key>
+
+    <key>items</key>
     <array>
 
         <dict>
-            <key>Type</key>
-            <string>PSGroupCell</string>
-            <key>Label</key>
-            <string>SystemCorner</string>
-        </dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
 
-        <dict>
-            <key>Type</key>
-            <string>PSSwitchSpecifier</string>
-            <key>Title</key>
+            <key>label</key>
             <string>Enabled</string>
-            <key>Key</key>
+
+            <key>key</key>
             <string>SCEnabled</string>
-            <key>DefaultValue</key>
+
+            <key>default</key>
             <true/>
         </dict>
 
         <dict>
-            <key>Type</key>
-            <string>PSNumberSpecifier</string>
-            <key>Title</key>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+
+            <key>label</key>
             <string>Corner Radius</string>
-            <key>Key</key>
+
+            <key>key</key>
             <string>SCRadius</string>
-            <key>DefaultValue</key>
-            <real>1.0</real>
-            <key>MinimumValue</key>
-            <real>0.0</real>
-            <key>MaximumValue</key>
-            <real>100.0</real>
-            <key>KeyboardType</key>
-            <string>UIKeyboardTypeNumbersAndPunctuation</string>
+
+            <key>default</key>
+            <string>1</string>
+
+            <key>keyboard</key>
+            <string>NumberPad</string>
+
+            <key>placeholder</key>
+            <string>1 - 100</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+
+            <key>label</key>
+            <string>Respring</string>
+
+            <key>action</key>
+            <string>respring</string>
         </dict>
 
     </array>
 
-    <key>Title</key>
+    <key>title</key>
     <string>SystemCorner</string>
+
 </dict>
 </plist>
