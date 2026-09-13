@@ -3,36 +3,52 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 
 <plist version="1.0">
-<array>
+<dict>
 
-    <dict>
-        <key>cell</key>
-        <string>PSGroupCell</string>
-        <key>label</key>
-        <string>SystemCorner</string>
-    </dict>
+    <key>items</key>
+    <array>
 
-    <dict>
-        <key>cell</key>
-        <string>PSEditTextCell</string>
-        <key>label</key>
-        <string>Độ bo góc</string>
-        <key>key</key>
-        <string>SCCornerRadius</string>
-        <key>default</key>
-        <real>1</real>
-        <key>placeholder</key>
-        <string>Nhập số</string>
-        <key>keyboardType</key>
-        <string>UIKeyboardTypeNumbersAndPunctuation</string>
-    </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>SystemCorner</string>
+        </dict>
 
-    <dict>
-        <key>cell</key>
-        <string>PSGroupCell</string>
-        <key>footerText</key>
-        <string>Nhập độ bo góc theo px. Giá trị mặc định: 1 px.</string>
-    </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.trantu2641.systemcorner</string>
+            <key>key</key>
+            <string>SCEnabled</string>
+        </dict>
 
-</array>
+        <dict>
+            <key>cell</key>
+            <string>PSTextFieldCell</string>
+            <key>label</key>
+            <string>Corner Radius</string>
+            <key>default</key>
+            <real>1.0</real>
+            <key>defaults</key>
+            <string>com.trantu2641.systemcorner</string>
+            <key>key</key>
+            <string>SCRadius</string>
+            <key>placeholder</key>
+            <string>1</string>
+            <key>keyboard</key>
+            <string>numberPad</string>
+        </dict>
+
+    </array>
+
+    <key>title</key>
+    <string>SystemCorner</string>
+
+</dict>
 </plist>
