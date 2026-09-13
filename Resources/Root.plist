@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
- "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>PreferenceSpecifiers</key>
@@ -26,7 +26,7 @@
 
         <dict>
             <key>Type</key>
-            <string>PSDecimalSpecifier</string>
+            <string>PSNumberSpecifier</string>
             <key>Title</key>
             <string>Corner Radius</string>
             <key>Key</key>
@@ -37,6 +37,8 @@
             <real>0.0</real>
             <key>MaximumValue</key>
             <real>100.0</real>
+            <key>KeyboardType</key>
+            <string>UIKeyboardTypeNumbersAndPunctuation</string>
         </dict>
 
     </array>
