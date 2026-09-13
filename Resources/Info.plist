@@ -4,16 +4,16 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>English</string>
 
-	<key>CFBundleDisplayName</key>
-	<string>SystemCorner</string>
+	<key>CFBundleExecutable</key>
+	<string>SystemCornerPrefs</string>
 
 	<key>CFBundleIdentifier</key>
 	<string>com.tutu.systemcornerprefs</string>
 
 	<key>CFBundleName</key>
-	<string>SystemCorner1pxPrefs</string>
+	<string>SystemCorner</string>
 
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
@@ -22,14 +22,9 @@
 	<string>1.0.0</string>
 
 	<key>CFBundleVersion</key>
-	<string>1.0.0</string>
+	<string>1.0</string>
 
 	<key>NSPrincipalClass</key>
-	<string>RootListController</string>
-
-	<key>SupportedUserInterfaceIdioms</key>
-	<array>
-		<string>1</string>
-	</array>
+	<string>SCRootListController</string>
 </dict>
 </plist>
