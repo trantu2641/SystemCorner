@@ -3,22 +3,18 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
 	<key>items</key>
 	<array>
 
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-
 			<key>label</key>
-			<string>Enabled</string>
+			<string>SystemCorner</string>
 
-			<key>key</key>
-			<string>SC16Enabled</string>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 
-			<key>default</key>
-			<true/>
+			<key>footerText</key>
+			<string>Nhập độ bo góc màn hình. 0 = vuông, số lớn hơn = bo nhiều hơn.</string>
 		</dict>
 
 		<dict>
@@ -34,17 +30,24 @@
 			<key>default</key>
 			<real>1.0</real>
 
-			<key>placeholder</key>
-			<string>1</string>
-
 			<key>keyboardType</key>
 			<string>UIKeyboardTypeNumbersAndPunctuation</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+
+			<key>label</key>
+			<string>Respring</string>
+
+			<key>action</key>
+			<string>respring</string>
 		</dict>
 
 	</array>
 
 	<key>title</key>
 	<string>SystemCorner</string>
-
 </dict>
 </plist>
