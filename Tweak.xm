@@ -1,8 +1,17 @@
 #import <UIKit/UIKit.h>
 
+static NSUserDefaults *SCDefaults(void) {
+    return [[NSUserDefaults alloc]
+        initWithSuiteName:@"com.trantu2641.systemcorner"];
+}
+
+static BOOL SCEnabled(void) {
+    NSNumber *value = [SCDefaults() objectForKey:@"SCEnabled"];
+    return value ? value.boolValue : YES;
+}
+
 static CGFloat SCRadius(void) {
-    NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SCRadius"];
+    NSNumber *value = [SCDefaults() objectForKey:@"SCRadius"];
 
     if (!value) {
         return 1.0;
@@ -10,22 +19,13 @@ static CGFloat SCRadius(void) {
 
     CGFloat radius = value.doubleValue;
 
-    if (radius < 0.0) {
+    if (radius < 0.0)
         radius = 0.0;
-    }
 
-    if (radius > 100.0) {
+    if (radius > 100.0)
         radius = 100.0;
-    }
 
     return radius;
-}
-
-static BOOL SCEnabled(void) {
-    NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SCEnabled"];
-
-    return value ? value.boolValue : YES;
 }
 
 %hook UIScreen
@@ -70,9 +70,8 @@ static BOOL SCEnabled(void) {
 
 %ctor {
     @autoreleasepool {
-        if (SCEnabled()) {
-            NSLog(@"[SystemCorner] Loaded - radius: %.2f",
-                  SCRadius());
-        }
+        NSLog(@"[SystemCorner] Loaded");
+        NSLog(@"[SystemCorner] Enabled=%d Radius=%.2f",
+              SCEnabled(), SCRadius());
     }
 }
