@@ -1,23 +1,27 @@
 #import <UIKit/UIKit.h>
-
-static NSUserDefaults *SCDefaults(void) {
-    return [[NSUserDefaults alloc]
-        initWithSuiteName:@"com.trantu2641.systemcorner"];
-}
-
-static BOOL SCEnabled(void) {
-    NSNumber *value = [SCDefaults() objectForKey:@"SCEnabled"];
-    return value ? value.boolValue : YES;
-}
+#import <CoreFoundation/CoreFoundation.h>
 
 static CGFloat SCRadius(void) {
-    NSNumber *value = [SCDefaults() objectForKey:@"SCRadius"];
+    CFPropertyListRef value = CFPreferencesCopyAppValue(
+        CFSTR("SCRadius"),
+        CFSTR("xyz.cypwn.systemcorner")
+    );
 
-    if (!value) {
-        return 1.0;
+    CGFloat radius = 1.0;
+
+    if (value && CFGetTypeID(value) == CFNumberGetTypeID()) {
+        double number = 1.0;
+        CFNumberGetValue(
+            (CFNumberRef)value,
+            kCFNumberDoubleType,
+            &number
+        );
+        radius = number;
     }
 
-    CGFloat radius = value.doubleValue;
+    if (value) {
+        CFRelease(value);
+    }
 
     if (radius < 0.0)
         radius = 0.0;
@@ -26,6 +30,25 @@ static CGFloat SCRadius(void) {
         radius = 100.0;
 
     return radius;
+}
+
+static BOOL SCEnabled(void) {
+    CFPropertyListRef value = CFPreferencesCopyAppValue(
+        CFSTR("SCEnabled"),
+        CFSTR("xyz.cypwn.systemcorner")
+    );
+
+    BOOL enabled = YES;
+
+    if (value && CFGetTypeID(value) == CFBooleanGetTypeID()) {
+        enabled = CFBooleanGetValue((CFBooleanRef)value);
+    }
+
+    if (value) {
+        CFRelease(value);
+    }
+
+    return enabled;
 }
 
 %hook UIScreen
@@ -70,8 +93,11 @@ static CGFloat SCRadius(void) {
 
 %ctor {
     @autoreleasepool {
-        NSLog(@"[SystemCorner] Loaded");
-        NSLog(@"[SystemCorner] Enabled=%d Radius=%.2f",
-              SCEnabled(), SCRadius());
+        if (SCEnabled()) {
+            NSLog(
+                @"[SystemCorner] Loaded - radius: %.2f",
+                SCRadius()
+            );
+        }
     }
 }
