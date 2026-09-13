@@ -4,7 +4,6 @@
 
 <plist version="1.0">
 <dict>
-
     <key>items</key>
     <array>
 
@@ -36,17 +35,18 @@
             <key>key</key>
             <string>SCRadius</string>
             <key>default</key>
-            <real>1</real>
+            <string>1</string>
             <key>defaults</key>
             <string>com.trantu2641.systemcorner</string>
             <key>placeholder</key>
-            <string>1</string>
+            <string>Nhập giá trị</string>
+            <key>keyboardType</key>
+            <integer>4</integer>
         </dict>
 
     </array>
 
     <key>title</key>
     <string>SystemCorner</string>
-
 </dict>
 </plist>
