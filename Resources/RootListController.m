@@ -1,17 +1,17 @@
 #import <Preferences/PSListController.h>
 
-@interface RootListController : PSListController
+@interface SCRootListController : PSListController
 @end
 
-@implementation RootListController
+@implementation SCRootListController
 
 - (NSArray *)specifiers {
-    if (!_specifiers) {
-        _specifiers = [self loadSpecifiersFromPlistName:@"root"
-                                                  target:self];
-    }
+	if (!_specifiers) {
+		_specifiers = [self loadSpecifiersFromPlistName:@"Root"
+												 target:self];
+	}
 
-    return _specifiers;
+	return _specifiers;
 }
 
 @end
