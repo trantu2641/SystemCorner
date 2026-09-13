@@ -4,13 +4,16 @@
 
 <plist version="1.0">
 <dict>
+
     <key>Filter</key>
     <dict>
+
         <key>Bundles</key>
         <array>
-            <string>com.apple.SpringBoard</string>
-            <string>com.apple.Preferences</string>
+            <string>com.apple.springboard</string>
         </array>
+
     </dict>
+
 </dict>
 </plist>
