@@ -3,57 +3,66 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 
 <plist version="1.0">
-<array>
+<dict>
 
-    <dict>
-        <key>cell</key>
-        <string>PSGroupCell</string>
+    <key>PreferenceSpecifiers</key>
+    <array>
 
-        <key>label</key>
-        <string>SystemCorner</string>
-    </dict>
+        <dict>
+            <key>Type</key>
+            <string>PSGroupCell</string>
 
-    <dict>
-        <key>cell</key>
-        <string>PSTextFieldCell</string>
+            <key>Label</key>
+            <string>SystemCorner</string>
+        </dict>
 
-        <key>label</key>
-        <string>Corner Radius</string>
+        <dict>
+            <key>Type</key>
+            <string>PSSwitchSpecifier</string>
 
-        <key>key</key>
-        <string>SCRadius</string>
+            <key>Key</key>
+            <string>SCEnabled</string>
 
-        <key>default</key>
-        <real>1</real>
+            <key>DefaultValue</key>
+            <true/>
 
-        <key>placeholder</key>
-        <string>1 - 100</string>
+            <key>Label</key>
+            <string>Enabled</string>
 
-        <key>keyboardType</key>
-        <integer>4</integer>
-    </dict>
+            <key>PostNotification</key>
+            <string>xyz.cypwn.systemcorner.settingsChanged</string>
+        </dict>
 
-    <dict>
-        <key>cell</key>
-        <string>PSSwitchCell</string>
+        <dict>
+            <key>Type</key>
+            <string>PSNumberSpecifier</string>
 
-        <key>label</key>
-        <string>Enabled</string>
+            <key>Key</key>
+            <string>SCRadius</string>
 
-        <key>key</key>
-        <string>SCEnabled</string>
+            <key>DefaultValue</key>
+            <real>1.0</real>
 
-        <key>default</key>
-        <true/>
-    </dict>
+            <key>Label</key>
+            <string>Corner Radius</string>
 
-    <dict>
-        <key>cell</key>
-        <string>PSGroupCell</string>
+            <key>MinimumValue</key>
+            <real>0.0</real>
 
-        <key>footerText</key>
-        <string>Corner Radius: 0 - 100</string>
-    </dict>
+            <key>MaximumValue</key>
+            <real>100.0</real>
 
-</array>
+            <key>KeyboardType</key>
+            <integer>4</integer>
+
+            <key>PostNotification</key>
+            <string>xyz.cypwn.systemcorner.settingsChanged</string>
+        </dict>
+
+    </array>
+
+    <key>Title</key>
+    <string>SystemCorner</string>
+
+</dict>
 </plist>
