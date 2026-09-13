@@ -1,23 +1,8 @@
 #import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-#import <objc/runtime.h>
 
-static BOOL SCEnabled(void) {
-    NSString *version = UIDevice.currentDevice.systemVersion;
-
-    if (![version hasPrefix:@"16.4"]) {
-        return NO;
-    }
-
+static CGFloat SCRadius(void) {
     NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SC16Enabled"];
-
-    return value ? value.boolValue : YES;
-}
-
-static CGFloat SCCornerRadius(void) {
-    NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SCCornerRadius"];
+        objectForKey:@"SCRadius"];
 
     if (!value) {
         return 1.0;
@@ -36,19 +21,18 @@ static CGFloat SCCornerRadius(void) {
     return radius;
 }
 
+static BOOL SCEnabled(void) {
+    NSNumber *value = [[NSUserDefaults standardUserDefaults]
+        objectForKey:@"SCEnabled"];
+
+    return value ? value.boolValue : YES;
+}
+
 %hook UIScreen
 
 - (CGFloat)_displayCornerRadius {
     if (SCEnabled()) {
-        return SCCornerRadius();
-    }
-
-    return %orig;
-}
-
-- (UIEdgeInsets)_sceneSafeAreaInsets {
-    if (SCEnabled()) {
-        return UIEdgeInsetsZero;
+        return SCRadius();
     }
 
     return %orig;
@@ -60,7 +44,7 @@ static CGFloat SCCornerRadius(void) {
 
 - (CGFloat)displayCornerRadius {
     if (SCEnabled()) {
-        return SCCornerRadius();
+        return SCRadius();
     }
 
     return %orig;
@@ -68,15 +52,15 @@ static CGFloat SCCornerRadius(void) {
 
 - (CGFloat)_displayCornerRadius {
     if (SCEnabled()) {
-        return SCCornerRadius();
+        return SCRadius();
     }
 
     return %orig;
 }
 
-+ (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
+- (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
     if (SCEnabled()) {
-        return %orig(SCCornerRadius());
+        return %orig(SCRadius());
     }
 
     return %orig(radius);
@@ -87,8 +71,8 @@ static CGFloat SCCornerRadius(void) {
 %ctor {
     @autoreleasepool {
         if (SCEnabled()) {
-            NSLog(@"[SystemCorner] Loaded - radius: %.2fpx",
-                  SCCornerRadius());
+            NSLog(@"[SystemCorner] Loaded - radius: %.2f",
+                  SCRadius());
         }
     }
 }
