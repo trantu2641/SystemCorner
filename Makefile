@@ -25,5 +25,10 @@ SystemCornerPrefs_CFLAGS := -fobjc-arc
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 
+internal-stage::
+	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
+	$(ECHO_NOTHING)cp Resources/SystemCornerPrefs.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist$(ECHO_END)
+
+
 after-install::
-	install.exec "killall -9 SpringBoard"
+	install.exec "killall -9 SpringBoard 2>/dev/null || true"
