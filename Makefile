@@ -11,6 +11,16 @@ SystemCorner_CFLAGS := -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
-SUBPROJECTS += SystemCornerPrefs
 
-include $(THEOS_MAKE_PATH)/aggregate.mk
+BUNDLE_NAME := SystemCornerPrefs
+
+SystemCornerPrefs_FILES := Resources/RootListController.m
+SystemCornerPrefs_RESOURCE_FILES := \
+    Resources/Root.plist \
+    Resources/Info.plist
+
+SystemCornerPrefs_INSTALL_PATH := /Library/PreferenceBundles
+SystemCornerPrefs_FRAMEWORKS := UIKit
+SystemCornerPrefs_PRIVATE_FRAMEWORKS := Preferences
+
+include $(THEOS_MAKE_PATH)/bundle.mk
