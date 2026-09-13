@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <key>PreferenceSpecifiers</key>
+    <array>
+
+        <dict>
+            <key>Type</key>
+            <string>PSGroupCell</string>
+
+            <key>Label</key>
+            <string>System Corner</string>
+
+            <key>FooterText</key>
+            <string>Nhập độ bo góc hệ thống. 0 = vuông, số lớn hơn = bo nhiều hơn.</string>
+        </dict>
+
+
+        <dict>
+            <key>Type</key>
+            <string>PSEditTextCell</string>
+
+            <key>Key</key>
+            <string>SystemCornerRadius</string>
+
+            <key>DefaultValue</key>
+            <real>1.0</real>
+
+            <key>Label</key>
+            <string>Corner Radius</string>
+
+            <key>KeyboardType</key>
+            <string>UIKeyboardTypeNumbersAndPunctuation</string>
+        </dict>
+
+
+        <dict>
+            <key>Type</key>
+            <string>PSGroupCell</string>
+
+            <key>FooterText</key>
+            <string>Thay đổi sẽ được áp dụng sau khi Respring.</string>
+        </dict>
+
+
+        <dict>
+            <key>Type</key>
+            <string>PSButtonCell</string>
+
+            <key>Label</key>
+            <string>Respring</string>
+
+            <key>Action</key>
+            <string>respring</string>
+        </dict>
+
+    </array>
+
+    <key>Title</key>
+    <string>SystemCorner</string>
+
+</dict>
+</plist>
