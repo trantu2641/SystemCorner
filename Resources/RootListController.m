@@ -1,28 +1,46 @@
 #import "RootListController.h"
+#import <Preferences/PSSpecifier.h>
+#import <Preferences/PSTextFieldSpecifier.h>
 
-@implementation SCRootListController
+static NSString *const SCPreferenceDomain = @"com.trantu2641.systemcorner";
 
-- (NSArray *)specifiers
-{
+@implementation RootListController
+
+- (NSArray *)specifiers {
     if (!_specifiers) {
-        _specifiers = [self loadSpecifiersFromPlistName:@"Root"
-                                                 target:self];
+        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
     }
-
     return _specifiers;
 }
 
-- (void)respring
-{
-    pid_t pid = [[NSProcessInfo processInfo] processIdentifier];
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+    NSString *key = [specifier propertyForKey:@"key"];
+    if (!key) return;
 
-    if (pid == 0) {
-        return;
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferenceDomain];
+    [defaults setObject:value forKey:key];
+    [defaults synchronize];
+
+    [super setPreferenceValue:value specifier:specifier];
+
+    if ([key isEqualToString:@"CornerRadius"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SystemCornerPreferencesChanged"
+                                                                object:nil];
+        });
+    }
+}
+
+- (id)readPreferenceValue:(PSSpecifier *)specifier {
+    NSString *key = [specifier propertyForKey:@"key"];
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SCPreferenceDomain];
+    id value = [defaults objectForKey:key];
+
+    if (!value && [key isEqualToString:@"CornerRadius"]) {
+        return @1;
     }
 
-    // PreferenceLoader gọi method này từ PSButtonCell.
-    // Dùng SpringBoard restart thông qua launchctl.
-    system("killall -9 SpringBoard");
+    return value;
 }
 
 @end
