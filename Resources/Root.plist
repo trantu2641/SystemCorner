@@ -26,20 +26,11 @@
         <key>default</key>
         <real>1</real>
 
-        <key>keyboardType</key>
-        <string>UIKeyboardTypeNumberPad</string>
-
-        <key>isDecimal</key>
-        <true/>
-
         <key>placeholder</key>
         <string>1 - 100</string>
 
-        <key>min</key>
-        <real>0</real>
-
-        <key>max</key>
-        <real>100</real>
+        <key>keyboardType</key>
+        <integer>4</integer>
     </dict>
 
     <dict>
