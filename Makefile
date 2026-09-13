@@ -21,13 +21,14 @@ SystemCornerPrefs_INSTALL_PATH := /Library/PreferenceBundles
 SystemCornerPrefs_FRAMEWORKS := UIKit
 SystemCornerPrefs_PRIVATE_FRAMEWORKS := Preferences
 SystemCornerPrefs_CFLAGS := -fobjc-arc
+SystemCornerPrefs_BUNDLE_RESOURCES := Resources/Root.plist
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 
-internal-stage::
-	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
-	$(ECHO_NOTHING)cp Resources/SystemCornerPrefs.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist$(ECHO_END)
+after-stage::
+	$(ECHO_NOTHING)mkdir -p "$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences"$(ECHO_END)
+	$(ECHO_NOTHING)cp "Resources/SystemCornerPrefs.plist" "$(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/SystemCornerPrefs.plist"$(ECHO_END)
 
 
 after-install::
