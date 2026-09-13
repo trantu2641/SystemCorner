@@ -1,22 +1,30 @@
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
-static BOOL SCEnabled(void) {
+static NSString * const SC16RadiusKey = @"SystemCornerRadius";
+
+static BOOL SC16Enabled(void)
+{
     NSString *version = UIDevice.currentDevice.systemVersion;
 
+    // Chỉ hoạt động trên iOS 16.4
     if (![version hasPrefix:@"16.4"]) {
         return NO;
     }
 
-    NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SC16Enabled"];
+    NSNumber *enabled =
+        [[NSUserDefaults standardUserDefaults]
+            objectForKey:@"SC16Enabled"];
 
-    return value ? value.boolValue : YES;
+    return enabled ? enabled.boolValue : YES;
 }
 
-static CGFloat SCCornerRadius(void) {
-    NSNumber *value = [[NSUserDefaults standardUserDefaults]
-        objectForKey:@"SystemCornerRadius"];
+static CGFloat SC16CornerRadius(void)
+{
+    NSNumber *value =
+        [[NSUserDefaults standardUserDefaults]
+            objectForKey:SC16RadiusKey];
 
     if (!value) {
         return 1.0;
@@ -24,10 +32,12 @@ static CGFloat SCCornerRadius(void) {
 
     CGFloat radius = value.doubleValue;
 
+    // Không cho giá trị âm
     if (radius < 0.0) {
         radius = 0.0;
     }
 
+    // Giới hạn để tránh giá trị bất thường
     if (radius > 100.0) {
         radius = 100.0;
     }
@@ -35,18 +45,21 @@ static CGFloat SCCornerRadius(void) {
     return radius;
 }
 
+
 %hook UIScreen
 
-- (CGFloat)_displayCornerRadius {
-    if (SCEnabled()) {
-        return SCCornerRadius();
+- (CGFloat)_displayCornerRadius
+{
+    if (SC16Enabled()) {
+        return SC16CornerRadius();
     }
 
     return %orig;
 }
 
-- (UIEdgeInsets)_sceneSafeAreaInsets {
-    if (SCEnabled()) {
+- (UIEdgeInsets)_sceneSafeAreaInsets
+{
+    if (SC16Enabled()) {
         return UIEdgeInsetsZero;
     }
 
@@ -58,25 +71,28 @@ static CGFloat SCCornerRadius(void) {
 
 %hook UITraitCollection
 
-- (CGFloat)displayCornerRadius {
-    if (SCEnabled()) {
-        return SCCornerRadius();
+- (CGFloat)displayCornerRadius
+{
+    if (SC16Enabled()) {
+        return SC16CornerRadius();
     }
 
     return %orig;
 }
 
-- (CGFloat)_displayCornerRadius {
-    if (SCEnabled()) {
-        return SCCornerRadius();
+- (CGFloat)_displayCornerRadius
+{
+    if (SC16Enabled()) {
+        return SC16CornerRadius();
     }
 
     return %orig;
 }
 
-+ (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius {
-    if (SCEnabled()) {
-        return %orig(SCCornerRadius());
++ (instancetype)traitCollectionWithDisplayCornerRadius:(CGFloat)radius
+{
+    if (SC16Enabled()) {
+        return %orig(SC16CornerRadius());
     }
 
     return %orig(radius);
@@ -85,11 +101,16 @@ static CGFloat SCCornerRadius(void) {
 %end
 
 
-%ctor {
+%ctor
+{
     @autoreleasepool {
-        if (SCEnabled()) {
-            NSLog(@"[SystemCorner] iOS 16.4 loaded - radius: %.2f",
-                  SCCornerRadius());
+
+        if (SC16Enabled()) {
+            NSLog(
+                @"[SystemCorner] Loaded - iOS %@ - Radius: %.2f",
+                UIDevice.currentDevice.systemVersion,
+                SC16CornerRadius()
+            );
         }
     }
 }
