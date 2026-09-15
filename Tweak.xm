@@ -5,8 +5,6 @@
 static CGFloat SHAStatusDelta = 0.0;
 static CGFloat SHAHomeDelta = 0.0;
 
-static NSMapTable *SHAOriginalTransforms;
-
 #pragma mark - Preferences
 
 static void SHA_LoadPreferences(void)
@@ -85,11 +83,11 @@ static BOOL SHA_IsPortrait(void)
             if (![scene isKindOfClass:[UIWindowScene class]])
                 continue;
 
-            UIWindowScene *ws =
+            UIWindowScene *windowScene =
                 (UIWindowScene *)scene;
 
             UIInterfaceOrientation orientation =
-                ws.interfaceOrientation;
+                windowScene.interfaceOrientation;
 
             if (orientation == UIInterfaceOrientationPortrait ||
                 orientation == UIInterfaceOrientationPortraitUpsideDown)
@@ -102,169 +100,9 @@ static BOOL SHA_IsPortrait(void)
     return NO;
 }
 
-#pragma mark - Original Transform
+#pragma mark - Resize Bounds
 
-static CGAffineTransform SHA_OriginalTransform(
-    UIView *view
-)
-{
-    if (!view)
-        return CGAffineTransformIdentity;
-
-    if (!SHAOriginalTransforms)
-    {
-        SHAOriginalTransforms =
-            [NSMapTable weakToStrongObjectsMapTable];
-    }
-
-    NSValue *value =
-        [SHAOriginalTransforms objectForKey:view];
-
-    if (value)
-        return [value CGAffineTransformValue];
-
-    CGAffineTransform transform =
-        view.transform;
-
-    [SHAOriginalTransforms
-        setObject:
-            [NSValue valueWithCGAffineTransform:transform]
-        forKey:view];
-
-    return transform;
-}
-
-#pragma mark - Safe Visual Container
-
-static BOOL SHA_HasGestureRecognizers(
-    UIView *view
-)
-{
-    if (!view)
-        return YES;
-
-    NSArray *gestures =
-        view.gestureRecognizers;
-
-    return gestures.count != 0;
-}
-
-static BOOL SHA_IsUnsafeContainer(
-    UIView *view
-)
-{
-    if (!view)
-        return YES;
-
-    NSString *name =
-        NSStringFromClass([view class]);
-
-    /*
-     * Không bao giờ đụng Home Grabber.
-     */
-    if ([name isEqualToString:
-            @"SBHomeGrabberView"])
-    {
-        return YES;
-    }
-
-    /*
-     * Không đụng UIWindow.
-     */
-    if ([view isKindOfClass:[UIWindow class]])
-    {
-        return YES;
-    }
-
-    /*
-     * Không đụng có gesture recognizer.
-     */
-    if (SHA_HasGestureRecognizers(view))
-    {
-        return YES;
-    }
-
-    return NO;
-}
-
-#pragma mark - Home Visual Container
-
-static UIView *SHA_FindHomeVisualContainer(
-    UIView *pill
-)
-{
-    if (!pill)
-        return nil;
-
-    UIWindow *window =
-        pill.window;
-
-    if (!window)
-        return nil;
-
-    CGFloat screenWidth =
-        CGRectGetWidth(window.bounds);
-
-    UIView *candidate =
-        nil;
-
-    UIView *current =
-        pill.superview;
-
-    int level = 0;
-
-    while (current &&
-           current != window &&
-           level < 8)
-    {
-        level++;
-
-        if (SHA_IsUnsafeContainer(current))
-        {
-            current =
-                current.superview;
-
-            continue;
-        }
-
-        CGRect bounds =
-            current.bounds;
-
-        CGFloat width =
-            CGRectGetWidth(bounds);
-
-        CGFloat height =
-            CGRectGetHeight(bounds);
-
-        /*
-         * Tìm container visual:
-         *
-         * - rộng gần bằng màn hình
-         * - cao vừa phải
-         * - không có gesture
-         *
-         * Không lấy chính pill.
-         */
-
-        if (screenWidth > 0.0 &&
-            width >= screenWidth * 0.60 &&
-            height >= 20.0 &&
-            height <= 180.0)
-        {
-            candidate =
-                current;
-        }
-
-        current =
-            current.superview;
-    }
-
-    return candidate;
-}
-
-#pragma mark - Resize Visual Container
-
-static void SHA_ResizeVisualContainer(
+static void SHA_ResizeHeight(
     UIView *view,
     CGFloat delta
 )
@@ -290,11 +128,6 @@ static void SHA_ResizeVisualContainer(
     if (newHeight < 1.0)
         newHeight = 1.0;
 
-    /*
-     * Giữ tâm theo chiều Y.
-     *
-     * Chỉ thay visual container.
-     */
     CGFloat centerY =
         CGRectGetMidY(bounds);
 
@@ -302,149 +135,10 @@ static void SHA_ResizeVisualContainer(
         newHeight;
 
     bounds.origin.y =
-        centerY - newHeight / 2.0;
+        centerY - (newHeight / 2.0);
 
     view.bounds =
         bounds;
-}
-
-#pragma mark - Home Bar
-
-%hook MTLumaDodgePillView
-
-- (void)layoutSubviews
-{
-    %orig;
-
-    SHA_LoadPreferences();
-
-    if (!SHA_IsPortrait())
-        return;
-
-    if (SHAHomeDelta == 0.0)
-        return;
-
-    UIView *pill =
-        (UIView *)self;
-
-    UIView *container =
-        SHA_FindHomeVisualContainer(pill);
-
-    if (!container)
-        return;
-
-    /*
-     * Không đụng pill.
-     *
-     * Chỉ resize visual container.
-     */
-    SHA_ResizeVisualContainer(
-        container,
-        SHAHomeDelta
-    );
-}
-
-%end
-
-%hook MTStaticColorPillView
-
-- (void)layoutSubviews
-{
-    %orig;
-
-    SHA_LoadPreferences();
-
-    if (!SHA_IsPortrait())
-        return;
-
-    if (SHAHomeDelta == 0.0)
-        return;
-
-    UIView *pill =
-        (UIView *)self;
-
-    UIView *container =
-        SHA_FindHomeVisualContainer(pill);
-
-    if (!container)
-        return;
-
-    SHA_ResizeVisualContainer(
-        container,
-        SHAHomeDelta
-    );
-}
-
-%end
-
-#pragma mark - Status Bar Container Search
-
-static BOOL SHA_IsStatusClass(
-    UIView *view
-)
-{
-    if (!view)
-        return NO;
-
-    NSString *name =
-        NSStringFromClass([view class]);
-
-    if ([name isEqualToString:@"_UIStatusBar"])
-        return YES;
-
-    if ([name isEqualToString:@"UIStatusBar"])
-        return YES;
-
-    if ([name isEqualToString:
-            @"SBMainDisplaySceneLayoutStatusBarView"])
-        return YES;
-
-    return NO;
-}
-
-static UIView *SHA_FindStatusContainer(
-    UIView *view
-)
-{
-    if (!view)
-        return nil;
-
-    UIView *current =
-        view;
-
-    int level = 0;
-
-    while (current && level < 6)
-    {
-        level++;
-
-        NSString *name =
-            NSStringFromClass([current class]);
-
-        if ([name containsString:@"StatusBar"])
-        {
-            /*
-             * Không lấy những view quá nhỏ,
-             * tránh bắt icon.
-             */
-            CGFloat width =
-                CGRectGetWidth(current.bounds);
-
-            CGFloat height =
-                CGRectGetHeight(current.bounds);
-
-            if (width >= 100.0 &&
-                height >= 15.0)
-            {
-                return current;
-            }
-        }
-
-        current =
-            current.superview;
-    }
-
-    return nil;
 }
 
 #pragma mark - Status Bar
@@ -463,23 +157,18 @@ static UIView *SHA_FindStatusContainer(
     if (SHAStatusDelta == 0.0)
         return;
 
-    UIView *status =
+    UIView *view =
         (UIView *)self;
 
-    /*
-     * Chính _UIStatusBar là container.
-     *
-     * Resize height thay vì scale icon.
-     */
-    SHA_ResizeVisualContainer(
-        status,
+    SHA_ResizeHeight(
+        view,
         SHAStatusDelta
     );
 }
 
 %end
 
-#pragma mark - SpringBoard Status Container
+#pragma mark - SpringBoard Status Bar
 
 %hook SBMainDisplaySceneLayoutStatusBarView
 
@@ -495,12 +184,88 @@ static UIView *SHA_FindStatusContainer(
     if (SHAStatusDelta == 0.0)
         return;
 
-    UIView *status =
+    UIView *view =
         (UIView *)self;
 
-    SHA_ResizeVisualContainer(
-        status,
+    SHA_ResizeHeight(
+        view,
         SHAStatusDelta
+    );
+}
+
+%end
+
+#pragma mark - Home Bar Visual
+
+static void SHA_FindHomeVisual(
+    UIView *root
+)
+{
+    if (!root)
+        return;
+
+    NSArray *children =
+        [[root subviews] copy];
+
+    for (UIView *child in children)
+    {
+        NSString *className =
+            NSStringFromClass([child class]);
+
+        if ([className isEqualToString:
+                @"MTLumaDodgePillView"] ||
+            [className isEqualToString:
+                @"MTStaticColorPillView"])
+        {
+            /*
+             * Không thay frame.
+             *
+             * Không thay transform.
+             *
+             * Không thay gesture.
+             *
+             * Chỉ thay bounds height của
+             * visual object.
+             */
+            SHA_ResizeHeight(
+                child,
+                SHAHomeDelta
+            );
+
+            continue;
+        }
+
+        /*
+         * Tìm sâu hơn.
+         */
+        SHA_FindHomeVisual(child);
+    }
+}
+
+#pragma mark - Home Bar Hook
+
+%hook UIWindow
+
+- (void)layoutSubviews
+{
+    %orig;
+
+    SHA_LoadPreferences();
+
+    if (!SHA_IsPortrait())
+        return;
+
+    if (SHAHomeDelta == 0.0)
+        return;
+
+    /*
+     * Chỉ tìm visual Home Bar.
+     *
+     * Không resize UIWindow.
+     * Không resize SBHomeGrabberView.
+     */
+    SHA_FindHomeVisual(
+        (UIView *)self
     );
 }
 
@@ -521,9 +286,6 @@ static void SHA_SettingsChanged(
     dispatch_async(
         dispatch_get_main_queue(),
         ^{
-            /*
-             * Chỉ yêu cầu layout lại.
-             */
             UIApplication *app =
                 [UIApplication sharedApplication];
 
@@ -532,21 +294,19 @@ static void SHA_SettingsChanged(
 
             if (@available(iOS 13.0, *))
             {
-                for (UIScene *scene in
-                     app.connectedScenes)
+                for (UIScene *scene in app.connectedScenes)
                 {
-                    if (![scene
-                            isKindOfClass:
-                                [UIWindowScene class]])
+                    if (![scene isKindOfClass:
+                              [UIWindowScene class]])
                     {
                         continue;
                     }
 
-                    UIWindowScene *ws =
+                    UIWindowScene *windowScene =
                         (UIWindowScene *)scene;
 
-                    for (UIWindow *window in
-                         ws.windows)
+                    for (UIWindow *window
+                         in windowScene.windows)
                     {
                         [window setNeedsLayout];
                     }
@@ -562,9 +322,6 @@ static void SHA_SettingsChanged(
 {
     @autoreleasepool
     {
-        SHAOriginalTransforms =
-            [NSMapTable weakToStrongObjectsMapTable];
-
         SHA_LoadPreferences();
 
         CFNotificationCenterAddObserver(
